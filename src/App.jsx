@@ -1,40 +1,62 @@
 import { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-
-function Box(props) {
-  // This reference gives us direct access to the THREE.Mesh object
-  const ref = useRef()
-  // Hold state for hovered and clicked events
-  const [hovered, hover] = useState(false)
-  const [clicked, click] = useState(false)
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame((state, delta) => (ref.current.rotation.x += delta))
-  // Return the view, these are regular Threejs elements expressed in JSX
-  return (
-    <mesh
-      {...props}
-      ref={ref}
-      scale={clicked ? 1.5 : 1}
-      onClick={(event) => click(!clicked)}
-      onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}
+import {
+  Float,
+  OrbitControls,
+  OrthographicCamera,
+  Bounds,
+  Hud,
+  PerformanceMonitor,
+  View,
+} from '@react-three/drei'
+import Lights from './Lights'
 
 export default function App() {
   return (
     <Canvas>
-      <ambientLight intensity={0.5} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-      <pointLight position={[-10, -10, -10]} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
+      <Lights />
+
+      <OrthographicCamera makeDefault zoom={50} position={[0, 0, 100]} />
+
+      {/* <Float position={[0, 0, 0]} speed={2} floatIntensity={5}> */}
+      {/* <Eureka position={[-1.2, 0, 0]} /> */}
+      {/* <Bounds> */}
+      <Eureka position={[0, 0, 0]} />
+      {/* </Bounds> */}
+      {/* </Float> */}
+
       <OrbitControls />
     </Canvas>
   )
 }
+
+function Eureka({ scale = 1, ...props }) {
+  const ref = useRef(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const [isClicked, setIsClicked] = useState(false)
+
+  useFrame((_, delta) => {
+    ref.current.rotation.x += delta
+    ref.current.rotation.y += delta
+    ref.current.rotation.z += delta
+  })
+
+  return (
+    <mesh
+      {...props}
+      ref={ref}
+      scale={isClicked ? scale * 1.5 : scale}
+      onClick={() => setIsClicked((prevState) => !prevState)}
+      onPointerOver={() => setIsHovered(true)}
+      onPointerOut={() => setIsHovered(false)}
+    >
+      <icosahedronGeometry />
+      <meshStandardMaterial
+        color={isHovered ? 'lime' : 'orange'}
+        roughness={0.5}
+        metalness={0}
+      />
+    </mesh>
+  )
+}
+

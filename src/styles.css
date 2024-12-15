@@ -4,13 +4,20 @@
 
 html,
 body,
-#root {
+#heroRoot {
   width: 100%;
-  height: 100%;
+  height: 85%;
   margin: 0;
   padding: 0;
 }
 
-body {
-  background: #f0f0f0;
+#heroRoot {
+background: linear-gradient(135deg,#4158D0  0%, #C850C0 42%, #e96a0e 76%, #ffaa00 100%);
 }
+
+.navbar{
+background: #ffcc00;
+background: #00cfff;
+}
+
+
